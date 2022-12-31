@@ -1,0 +1,3 @@
+/home/gianluca/Workspace/my_repo/SnakeGame/build/CMakeFiles/SnakeGame.dir
+/home/gianluca/Workspace/my_repo/SnakeGame/build/CMakeFiles/edit_cache.dir
+/home/gianluca/Workspace/my_repo/SnakeGame/build/CMakeFiles/rebuild_cache.dir

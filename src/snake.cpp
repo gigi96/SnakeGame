@@ -43,15 +43,30 @@ void Snake::update_head() {
   head_y = fmod(head_y + _grid_height, _grid_height);
 }
 
-void Snake::update_body(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) {
+void Snake::update_body(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
+{
   // Add previous head location to vector
   body.push_back(prev_head_cell);
 
-  if (!_growing) {
+  if (_growing == Status::NotGrowing) 
+  {
     // Remove the tail from the vector.
     body.erase(body.begin());
-  } else {
-    _growing = false;
+  } 
+  else if (_growing == Status::Decreasing)
+  {
+    // Remove the tail from the vector.
+    body.erase(body.begin());
+    if (size > 1)
+    {
+      body.erase(body.begin());
+      size--;
+    } 
+    _growing = Status::NotGrowing;   
+  }
+  else 
+  {
+    _growing = Status::NotGrowing;
     size++;
   }
 
@@ -63,7 +78,7 @@ void Snake::update_body(SDL_Point &current_head_cell, SDL_Point &prev_head_cell)
   }
 }
 
-void Snake::grow_body() { _growing = true; }
+void Snake::grow_body() { _growing = Status::Growing; }
 
 // Inefficient method to check if cell is occupied by snake.
 bool Snake::snake_cell(int x, int y) {
@@ -77,3 +92,5 @@ bool Snake::snake_cell(int x, int y) {
   }
   return false;
 }
+
+void Snake::decrease_body() { _growing = Status::Decreasing; }

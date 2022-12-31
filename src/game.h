@@ -26,6 +26,7 @@ public:
 private:
   Snake _snake;
   SDL_Point _food;
+  SDL_Point _obstacle;
 
   std::random_device _dev;
   std::mt19937 _engine;
@@ -40,6 +41,7 @@ private:
   void place_food();
   void update();
   static bool sort_by_second(const std::pair<std::string,int> &a, const std::pair<std::string,int> &b);
+  void place_obstacle();
 };
 
 #endif

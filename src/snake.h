@@ -7,6 +7,7 @@
 class Snake {
  public:
   enum class Direction { kUp, kDown, kLeft, kRight };
+  enum class Status { NotGrowing, Growing, Decreasing};
 
   Snake(int grid_width, int grid_height)
       : _grid_width(grid_width),
@@ -18,6 +19,7 @@ class Snake {
 
   void grow_body();
   bool snake_cell(int x, int y);
+  void decrease_body();
 
   Direction direction = Direction::kUp;
 
@@ -32,7 +34,7 @@ class Snake {
   void update_head();
   void update_body(SDL_Point &current_cell, SDL_Point &prev_cell);
 
-  bool _growing{false};
+  Status _growing{Status::NotGrowing};
   int _grid_width;
   int _grid_height;
 };

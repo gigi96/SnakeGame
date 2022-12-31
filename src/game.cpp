@@ -50,7 +50,7 @@ void Game::run(Controller const &controller, Renderer &renderer,
     // Input, Update, Render - the main game loop.
     controller.HandleInput(running, _snake);
     update();
-    renderer.Render(_snake, _food);
+    renderer.Render(_snake, _food, _obstacle);
 
     frame_end = SDL_GetTicks();
 
@@ -75,14 +75,16 @@ void Game::run(Controller const &controller, Renderer &renderer,
   }
 }
 
-void Game::place_food() {
+void Game::place_food()
+{
   int x, y;
   while (true) {
     x = _random_w(_engine);
     y = _random_h(_engine);
-    // Check that the location is not occupied by a snake item before placing
-    // food.
-    if (!_snake.snake_cell(x, y)) {
+    // Check that the location is not occupied by a snake item 
+    // and by an obstacle before placing food.
+    if (!_snake.snake_cell(x, y) && (x != _obstacle.x && y != _obstacle.y)) 
+    {
       _food.x = x;
       _food.y = y;
       return;
@@ -90,7 +92,8 @@ void Game::place_food() {
   }
 }
 
-void Game::update() {
+void Game::update()
+{
   if (!_snake.alive) return;
 
   _snake.update();
@@ -99,12 +102,25 @@ void Game::update() {
   int new_y = static_cast<int>(_snake.head_y);
 
   // Check if there's food over here
-  if (_food.x == new_x && _food.y == new_y) {
+  if (_food.x == new_x && _food.y == new_y)
+  {
     _score++;
     place_food();
+    place_obstacle();
     // Grow snake and increase speed.
     _snake.grow_body();
     _snake.speed += 0.02;
+  }
+
+  // Check if there's obstacle over here
+  if (_obstacle.x == new_x && _obstacle.y == new_y) 
+  {
+    if (_score > 0)
+    {
+      _score--;
+      _snake.decrease_body();
+    }    
+    place_obstacle();
   }
 }
 
@@ -139,4 +155,21 @@ void Game::update_statistics()
 bool Game::sort_by_second(const std::pair<std::string,int> &a, const std::pair<std::string,int> &b)
 {
     return (a.second > b.second);
+}
+
+void Game::place_obstacle()
+{
+  int x, y;
+  while (true) {
+    x = _random_w(_engine);
+    y = _random_h(_engine);
+    // Check that the location is not occupied by a snake item 
+    // and by a food before placing food.
+    if (!_snake.snake_cell(x, y) /*&& (x != _food.x && y != _food.y)*/) 
+    {
+      _obstacle.x = x;
+      _obstacle.y = y;
+      return;
+    }
+  }
 }
